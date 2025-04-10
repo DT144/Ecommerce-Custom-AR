@@ -1,23 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import ProductDetails from "./components/ProductDetails";
+import ARViewer from "./components/ARViewer";
+import products from "./products";
+import "./App.css";
 
 function App() {
+  const [showAR, setShowAR] = useState(false);
+
+  const handleViewAR = () => {
+    setShowAR(true);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+      <header>
+        <h1>AR E-commerce</h1>
       </header>
+      <main>
+        {!showAR ? (
+          <ProductDetails product={products.tvs[0]} onViewAR={handleViewAR} />
+        ) : (
+          <ARViewer modelPath={products.tvs[0].model} />
+        )}
+      </main>
     </div>
   );
 }
