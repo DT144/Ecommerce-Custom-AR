@@ -1,7 +1,8 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useGLTF, OrbitControls } from "@react-three/drei";
-import { XR, useXR, useARButton } from "@react-three/xr";
+import { XR, useXR } from "@react-three/xr";
+import * as THREE from "three"; // Import THREE for Vector3
 
 function Model({ modelPath }) {
   const { scene } = useGLTF(modelPath);
@@ -106,9 +107,24 @@ function ARScene() {
 }
 
 function ARButton({ children }) {
-  const { isSupported } = useXR();
-  const startAR = useARButton();
-  return isSupported ? <button onClick={startAR}>{children}</button> : null;
+  const { gl } = useThree();
+  const { isSupported, isAR, start, end } = useXR();
+  const [supported, setSupported] = useState(false);
+
+  useEffect(() => {
+    if (isSupported) {
+      setSupported(true);
+    }
+  }, [isSupported]);
+
+  const handleARClick = () => {
+    if (!isAR) {
+      start();
+    } else {
+      end();
+    }
+  };
+  return supported ? <button onClick={handleARClick}>{children}</button> : null;
 }
 
 function ARViewer({ modelPath }) {
